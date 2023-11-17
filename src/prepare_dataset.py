@@ -5,7 +5,10 @@ from Stemmer import Stemmer
 
 def prepare_text(text: str) -> str:
     text = text.lower()
-    text = text.replace(r'[.,!?]', '')
+
+    text = text.replace(r'[^a-z]', ' ')
+    text = text.replace(r'\s+[a-z]\s+', ' ')
+    text = text.replace(r'\s+', ' ')
 
     stemmer = Stemmer('english')
     words = stemmer.stemWords(text.split())
@@ -25,13 +28,15 @@ def prepare_dataset(path: str) -> list:
 
     categories = list(categories)
     for i in range(len(data)):
-        data[i][0] = prepare_text(data[i][0])
-        data[i][1] = categories.index(data[i][1])
-        data[i][2] = priorities.index(data[i][2])
+        data[i] = (
+            prepare_text(data[i][0]),
+            categories.index(data[i][1]),
+            priorities.index(data[i][2])
+        )
 
     # save data
     path = os.path.dirname(path) + '/'
     open(path + 'train_data.json', 'w').write(json.dumps(data))
     open(path + 'categories.json', 'w').write(json.dumps(categories))
 
-    return data
+    return list(map(list, zip(*data)))
