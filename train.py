@@ -1,6 +1,6 @@
 import os, sys
 import joblib
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import SGDClassifier
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -8,11 +8,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from src.prepare_dataset import prepare_dataset
 
 
-def train(d):
-    model = Pipeline([
-        ('tfidf', TfidfVectorizer()),
-        ('clf', MultiOutputClassifier(SGDClassifier(loss='hinge')))
-    ])
+def main(d):
+    model = make_pipeline(
+        TfidfVectorizer(),
+        MultiOutputClassifier(SGDClassifier(loss='hinge'))
+    )
 
     model.fit(d[0], list(zip(d[1], d[2])))
     return model
@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     d_path = os.path.abspath(d_path)
     dataset = prepare_dataset(d_path)
-    m = train(dataset)
+    m = main(dataset)
 
     path = os.path.dirname(d_path)
     joblib.dump(m, path + '/model.pkl')
