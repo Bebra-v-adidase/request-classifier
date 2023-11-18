@@ -11,7 +11,7 @@ from src.prepare_dataset import prepare_dataset
 def main(d):
     model = make_pipeline(
         TfidfVectorizer(),
-        MultiOutputClassifier(SGDClassifier(loss='hinge'))
+        MultiOutputClassifier(SGDClassifier(max_iter=1000, tol=1e-3, loss='modified_huber'))
     )
 
     model.fit(d[0], list(zip(d[1], d[2])))

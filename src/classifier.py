@@ -1,6 +1,7 @@
 import json
 import joblib
 import os.path
+import numpy as np
 
 
 class RequestClassifier:
@@ -18,5 +19,11 @@ class RequestClassifier:
 
     def predict(self, text):
         data = self.model.predict([text])[0]
-        category = self.categories[data[0]]
+
+        confidence = np.max(self.model.predict_proba([text])[0])
+        if confidence > 0.6:
+            category = self.categories[data[0]]
+        else:
+            category = 'contact_human_agent'
+
         return category, data[1]
