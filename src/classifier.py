@@ -8,7 +8,8 @@ class RequestClassifier:
     categories = []
 
     def __init__(self, model_path=None):
-        model_path = model_path or 'data/model.pkl'
+        project_dir = os.path.dirname(__file__) + '/../'
+        model_path = model_path or (project_dir + 'data/model.pkl')
         self.model = joblib.load(model_path)
 
         d = os.path.dirname(model_path)
