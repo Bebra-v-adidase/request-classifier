@@ -2,9 +2,9 @@ import re
 import json
 import joblib
 import os.path
+import requests
 import numpy as np
-from src.prepare_dataset import prepare_text
-from PyDeepLX import PyDeepLX
+from .prepare_dataset import prepare_text
 
 
 class RequestClassifier:
@@ -18,7 +18,9 @@ class RequestClassifier:
 
     def prepare_text(self, text):
         if re.match(r'[а-яё]', text, re.IGNORECASE):
-            text = PyDeepLX.translate(text)
+            text = requests.post('https://kitsuneai.ru/translate.php', data={
+                'text': text.encode('utf-8')
+            }).text
 
         return prepare_text(text)
 
