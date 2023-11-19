@@ -4,23 +4,21 @@ import joblib
 import os.path
 import numpy as np
 from src.prepare_dataset import prepare_text
-from yandexfreetranslate import YandexFreeTranslate
+from PyDeepLX import PyDeepLX
 
 
 class RequestClassifier:
     model = None
     categories = []
-    yt = YandexFreeTranslate(api="ios")
 
     def __init__(self, model_path=None):
         project_dir = os.path.dirname(__file__) + '/../'
         model_path = model_path or (project_dir + 'data/model.pkl')
         self.model = joblib.load(model_path)
 
-    @staticmethod
-    def prepare_text(text):
-        if re.match('[а-яё]', text, re.IGNORE_CASE):
-            text = yt.translate('ru', 'en', text)
+    def prepare_text(self, text):
+        if re.match(r'[а-яё]', text, re.IGNORECASE):
+            text = PyDeepLX.translate(text)
 
         return prepare_text(text)
 
